@@ -40,7 +40,7 @@
 
 #define VID       (0x1d50)
 #define PID       (0x6018)
-#define INTERFACE (5)
+#define INTERFACENO (5)
 #define ENDPOINT  (0x85)
 
 #define TRANSFER_SIZE (64)
@@ -435,7 +435,7 @@ int usbFeeder(void)
       if (!(dev = libusb_get_device(handle)))
 	continue;
 
-      if (libusb_claim_interface (handle, INTERFACE)<0)
+      if (libusb_claim_interface (handle, INTERFACENO)<0)
 	continue;
 
       while (0==libusb_bulk_transfer(handle, ENDPOINT, cbw, TRANSFER_SIZE, &size, 10))
