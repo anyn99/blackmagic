@@ -1,0 +1,13 @@
+dfu-util-static.exe -d 1d50:6018,:6017 -s 0x08002000:leave -D blackmagic.bin
+
+ ./swolisten.exe
+ 
+ cat chan00
+ 
+ (gcc -I /usr/include/libusb-1.0 swolisten.c swolisten -lusb-1.0 -std=gnu99 -g -Og)
+ 
+ arm-none-eabi-gdb Musicbox.elf -ex "targ extended \\\.\COM30" -ex "mon debug enable" -ex "mon ass never" -ex "mon swd"
+ 
+ make PROBE_HOST=baite
+ 
+ make ENABLE_DEBUG=1 PROBE_HOST=baite
