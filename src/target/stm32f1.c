@@ -98,6 +98,11 @@ static void stm32f1_add_flash(target *t,
                               uint32_t addr, size_t length, size_t erasesize)
 {
 	struct target_flash *f = calloc(1, sizeof(*f));
+	if (!f) {			/* calloc failed: heap exhaustion */
+		DEBUG("calloc: failed in %s\n", __func__);
+		return;
+	}
+
 	f->start = addr;
 	f->length = length;
 	f->blocksize = erasesize;
@@ -188,7 +193,6 @@ static int stm32f1_flash_erase(struct target_flash *f,
                                target_addr addr, size_t len)
 {
 	target *t = f->t;
-	uint16_t sr;
 
 	stm32f1_flash_unlock(t);
 
@@ -212,9 +216,9 @@ static int stm32f1_flash_erase(struct target_flash *f,
 	}
 
 	/* Check for error */
-	sr = target_mem_read32(t, FLASH_SR);
+	uint32_t sr = target_mem_read32(t, FLASH_SR);
 	if ((sr & SR_ERROR_MASK) || !(sr & SR_EOP)) {
-		DEBUG("stm32f1 flash erase error 0x%" PRIx16 "\n", sr);
+		DEBUG("stm32f1 flash erase error 0x%" PRIx32 "\n", sr);
 		return -1;
 	}
 
